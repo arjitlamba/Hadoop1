@@ -1,0 +1,58 @@
+*) important : 3306 is the default port. It can be used untll the examiner proves specific ip and port to connect***
+Important Note: Please  check you don't have space  between  before or after  =  sign.
+-----------------------------------------------------------------------------------------------------------------
+## To list all available databases
+
+sqoop list-databases   --connect "jdbc:mysql://localhost:3306/"   --username retail_dba   --password hadoop
+-----------------------------------------------------------------------------------------------------------------
+## To list all tables from database using sqoop
+
+sqoop list-tables   --connect "jdbc:mysql://localhost:3306/retail_db"   --username retail_dba   --password hadoop
+-----------------------------------------------------------------------------------------------------------------
+## To transfer one table from relational DB to HDFS at a specific path
+sqoop import \
+  --connect "jdbc:mysql://localhost:3306/retail_db" \
+  --username=retail_dba \
+  --password=hadoop \
+  --table departments \
+  --as-textfile \
+  --target-dir=/user/root/departments
+  
+  sqoop import \
+  --connect "jdbc:mysql://localhost:3306/retail_db" \
+  --username=retail_dba \
+  --password=hadoop \
+  --table categories \
+  --target-dir=/user/root/dir1/categories/
+  -----------------------------------------------------------------------------------------------------------------
+## Check contents at HDFS side 
+  
+  [root@sandbox ~]# hdfs dfs -ls
+Found 10 items
+drwx------   - root hdfs          0 2017-10-07 20:09 .staging
+-rw-r--r--   3 root hdfs          0 2017-10-07 16:34 a.txt
+drwxr-xr-x   - root hdfs          0 2017-10-07 16:58 ab
+-rw-r--r--   3 root hdfs          0 2017-10-07 16:34 b.txt
+drwxr-xr-x   - root hdfs          0 2017-10-07 20:06 categories
+drwxr-xr-x   - root hdfs          0 2017-10-07 20:04 departments
+drwxr-xr-x   - root hdfs          0 2017-10-07 20:09 dir1
+drwxr-xr-x   - root hdfs          0 2017-10-07 17:13 dir2
+drwxr-xr-x   - root hdfs          0 2017-10-07 17:13 dir3
+-rwxr-xr-x   3 root hdfs         79 2017-10-07 01:09 test1.txt
+-----------------------------------------------------------------------------------------------------------------
+## Check content inside a particular table
+
+[root@sandbox ~]# hdfs dfs -ls departments
+Found 5 items
+-rw-r--r--   3 root hdfs          0 2017-10-07 20:04 departments/_SUCCESS
+-rw-r--r--   3 root hdfs         21 2017-10-07 20:03 departments/part-m-00000
+-rw-r--r--   3 root hdfs         10 2017-10-07 20:03 departments/part-m-00001
+-rw-r--r--   3 root hdfs          7 2017-10-07 20:03 departments/part-m-00002
+-rw-r--r--   3 root hdfs         22 2017-10-07 20:04 departments/part-m-00003
+
+Read the data from one of the partition
+
+hdfs dfs -cat departments/part-m-00000
+-----------------------------------------------------------------------------------------------------------------
+  
+  
